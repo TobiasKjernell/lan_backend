@@ -19,4 +19,6 @@ class Settings(BaseSettings):
     s3_secret_access_key: SecretStr | None = None
     s3_endpoint_url: str | None = None
 
+    frontend_url: str | None = None
+
 settings = Settings()

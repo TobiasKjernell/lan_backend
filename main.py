@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from database import engine, AsyncSessionLocal
 from fastapi.middleware.cors import CORSMiddleware
+from config import settings
 from routers import lansettings, users
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exceptions import RequestValidationError
@@ -18,12 +19,16 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="LAN Backend", description="Backend for LAN party management", version="1.0.0")
 
+allowed_origins = ["http://localhost:5173"]
+if settings.frontend_url:
+    allowed_origins.append(settings.frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=allowed_origins,
     allow_methods=["*"],
-    allow_headers=["*"],        
-)   
+    allow_headers=["*"],
+)
 
 app.include_router(lansettings.router, prefix="/api/lan-settings", tags=["LAN Settings"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
